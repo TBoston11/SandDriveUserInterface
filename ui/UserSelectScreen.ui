@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>UserSelectScreen</class>
+ <widget class="QWidget" name="UserSelectScreen">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1200</width>
+    <height>800</height>
+   </rect>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget#UserSelectScreen {
+    background-color: #303030;
+}
+QListWidget {
+    background-color: #404040;
+    color: white;
+    border: 2px solid #505050;
+    border-radius: 10px;
+    padding: 20px;
+    font-size: 48pt;
+}
+QListWidget::item {
+    padding: 20px;
+    min-height: 80px;
+}
+QListWidget::item:selected {
+    background-color: #505050;
+}
+QListWidget::item:hover {
+    background-color: #454545;
+}</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <property name="spacing">
+    <number>40</number>
+   </property>
+   <property name="leftMargin">
+    <number>80</number>
+   </property>
+   <property name="topMargin">
+    <number>80</number>
+   </property>
+   <property name="rightMargin">
+    <number>80</number>
+   </property>
+   <property name="bottomMargin">
+    <number>80</number>
+   </property>
+   <item>
+    <widget class="QListWidget" name="listWidget"/>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

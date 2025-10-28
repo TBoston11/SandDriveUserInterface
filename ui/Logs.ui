@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+  <class>Logs</class>
+  <widget class="QWidget" name="Logs">
+    <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1200</width>
+        <height>800</height>
+      </rect>
+    </property>
+    <property name="styleSheet">
+      <string notr="true">QWidget#Logs {
+    background-color: #303030;
+}
+QLabel {
+    color: white;
+    font-size: 48pt;
+}
+QTextEdit {
+    background-color: #404040;
+    color: white;
+    border: 2px solid #505050;
+    border-radius: 10px;
+    padding: 20px;
+    font-size: 36pt;
+    selection-background-color: #606060;
+}
+QPushButton {
+    background-color: #404040;
+    color: white;
+    border: 2px solid #505050;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 48pt;
+    min-width: 300px;
+    min-height: 120px;
+}
+QPushButton:hover {
+    background-color: #505050;
+    border-color: #606060;
+}
+QPushButton:pressed {
+    background-color: #606060;
+}</string>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="spacing">
+        <number>40</number>
+      </property>
+      <property name="leftMargin">
+        <number>80</number>
+      </property>
+      <property name="topMargin">
+        <number>80</number>
+      </property>
+      <property name="rightMargin">
+        <number>80</number>
+      </property>
+      <property name="bottomMargin">
+        <number>80</number>
+      </property>
+      <item>
+        <widget class="QLabel" name="titleLabel">
+          <property name="text"><string>Logs</string></property>
+        </widget>
+      </item>
+      <item>
+        <widget class="QTextEdit" name="logsView">
+          <property name="readOnly"><bool>true</bool></property>
+        </widget>
+      </item>
+      <item>
+        <widget class="QPushButton" name="backButton">
+          <property name="text"><string>Back</string></property>
+        </widget>
+      </item>
+    </layout>
+  </widget>
+  <resources/>
+  <connections/>
+</ui>
