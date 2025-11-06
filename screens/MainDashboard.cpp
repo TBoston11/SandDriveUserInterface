@@ -24,6 +24,12 @@ MainDashboard::MainDashboard(const QString &username, QWidget *parent)
         ui->createUserButton->setVisible(false);
         connect(ui->createUserButton, &QPushButton::clicked, this, &MainDashboard::createUserRequested);
     }
+    
+    // Delete User button (hidden by default)
+    if (ui->deleteUserButton) {
+        ui->deleteUserButton->setVisible(false);
+        connect(ui->deleteUserButton, &QPushButton::clicked, this, &MainDashboard::deleteUserRequested);
+    }
 }
 
 MainDashboard::~MainDashboard()
@@ -34,4 +40,5 @@ MainDashboard::~MainDashboard()
 void MainDashboard::setIsAdmin(bool isAdmin)
 {
     if (ui->createUserButton) ui->createUserButton->setVisible(isAdmin);
+    if (ui->deleteUserButton) ui->deleteUserButton->setVisible(isAdmin);
 }

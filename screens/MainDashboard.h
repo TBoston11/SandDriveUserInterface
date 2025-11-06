@@ -24,6 +24,7 @@ signals:
     void logsRequested();
     void reportsRequested();
     void createUserRequested();
+    void deleteUserRequested();
 
 private:
     Ui::MainDashboard *ui;

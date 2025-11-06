@@ -19,6 +19,7 @@ set(TS_FILES SandDriveUserInterface_en_US.ts)
 
 set(PROJECT_SOURCES
     main.cpp
+    resources.qrc
     ${TS_FILES}
 )
 

@@ -14,6 +14,7 @@ public:
     bool initialize(const QString &path = QString()); // open/create DB
 
     bool addUser(const QString &username, const QString &password, bool isAdmin = false, QString *error = nullptr);
+    bool deleteUser(const QString &username, QString *error = nullptr);
     bool authenticate(const QString &username, const QString &password, bool &isAdminOut, QString *error = nullptr);
     bool userExists(const QString &username);
     bool isAdmin(const QString &username);

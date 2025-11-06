@@ -5,6 +5,7 @@
 #include <QVariant>
 #include <QFile>
 #include <QDir>
+#include <QStandardPaths>
 
 DatabaseManager &DatabaseManager::instance()
 {
@@ -21,8 +22,13 @@ bool DatabaseManager::initialize(const QString &path)
 {
     QString dbPath = path;
     if (dbPath.isEmpty()) {
-        // store in application directory
-        dbPath = QDir::currentPath() + QDir::separator() + "sanddrive_users.db";
+        // Use QStandardPaths to get a consistent data location
+        QString dataDir = QStandardPaths::writableLocation(QStandardPaths::AppDataLocation);
+        QDir dir;
+        if (!dir.exists(dataDir)) {
+            dir.mkpath(dataDir);
+        }
+        dbPath = dataDir + QDir::separator() + "sanddrive_users.db";
     }
 
     if (QSqlDatabase::contains("sandrive_connection")) {
@@ -76,6 +82,44 @@ bool DatabaseManager::addUser(const QString &username, const QString &password, 
         if (error) *error = q.lastError().text();
         return false;
     }
+    return true;
+}
+
+bool DatabaseManager::deleteUser(const QString &username, QString *error)
+{
+    if (username.isEmpty()) {
+        if (error) *error = "Username is empty";
+        return false;
+    }
+
+    // Prevent deleting the last admin user
+    if (isAdmin(username)) {
+        QSqlDatabase db = QSqlDatabase::database("sandrive_connection");
+        QSqlQuery q(db);
+        q.prepare("SELECT COUNT(1) FROM users WHERE is_admin = 1");
+        if (q.exec() && q.next()) {
+            int adminCount = q.value(0).toInt();
+            if (adminCount <= 1) {
+                if (error) *error = "Cannot delete the last admin user";
+                return false;
+            }
+        }
+    }
+
+    QSqlDatabase db = QSqlDatabase::database("sandrive_connection");
+    QSqlQuery q(db);
+    q.prepare("DELETE FROM users WHERE username = :u");
+    q.bindValue(":u", username);
+    if (!q.exec()) {
+        if (error) *error = q.lastError().text();
+        return false;
+    }
+    
+    if (q.numRowsAffected() == 0) {
+        if (error) *error = "User not found";
+        return false;
+    }
+    
     return true;
 }
 

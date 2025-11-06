@@ -34,12 +34,16 @@ void LoginScreen::onLoginClicked()
         Q_UNUSED(isAdmin);
         emit loginSuccessful(m_username);
     } else {
-        // If the authentication failure is due to incorrect password, show a concise test message
-        if (err.isEmpty() || err.toLower() == "incorrect password") {
-            QMessageBox::warning(this, "Login Failed", "Incorrect Password");
-        } else {
-            QMessageBox::warning(this, "Login Failed", err);
+        // Ensure there is a readable message
+        if (err.isEmpty()) {
+            err = "Incorrect Password";
         }
+        QMessageBox msgBox(this);
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setWindowTitle("Login Failed");
+        msgBox.setText(err);
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.exec();
     }
 }
 

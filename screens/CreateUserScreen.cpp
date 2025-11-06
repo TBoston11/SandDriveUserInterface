@@ -23,19 +23,40 @@ void CreateUserScreen::onCreateClicked()
     QString password = ui->passwordEdit->text();
     QString err;
     if (username.isEmpty() || password.isEmpty()) {
-        QMessageBox::warning(this, "Create User", "Username and password must not be empty");
+        QMessageBox msgBox(this);
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setWindowTitle("Create User");
+        msgBox.setText("Username and password must not be empty");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.exec();
         return;
     }
     if (DatabaseManager::instance().userExists(username)) {
-        QMessageBox::warning(this, "Create User", "User already exists");
+        QMessageBox msgBox(this);
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setWindowTitle("Create User");
+        msgBox.setText("User already exists");
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.exec();
         return;
     }
     if (!DatabaseManager::instance().addUser(username, password, false, &err)) {
-        QMessageBox::warning(this, "Create User", "Failed to create user: " + err);
+        if (err.isEmpty()) err = "Failed to create user";
+        QMessageBox msgBox(this);
+        msgBox.setIcon(QMessageBox::Warning);
+        msgBox.setWindowTitle("Create User");
+        msgBox.setText("Failed to create user: " + err);
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.exec();
         return;
     }
     // Show a concise confirmation message for tests
-    QMessageBox::information(this, "Create User", "New User Added.");
+    QMessageBox msgBox(this);
+    msgBox.setIcon(QMessageBox::Information);
+    msgBox.setWindowTitle("Create User");
+    msgBox.setText("New User Added.");
+    msgBox.setStandardButtons(QMessageBox::Ok);
+    msgBox.exec();
     // Clear the input fields
     ui->usernameEdit->clear();
     ui->passwordEdit->clear();
