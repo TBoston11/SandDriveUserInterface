@@ -23,19 +23,14 @@ QListWidget {
     color: white;
     border: 2px solid #505050;
     border-radius: 10px;
-    padding: 20px;
-    font-size: 48pt;
+    padding: 10px;
+    font-size: 16pt;
 }
 QListWidget::item {
-    padding: 20px;
-    min-height: 80px;
+    padding: 10px;
 }
 QListWidget::item:selected {
     background-color: #505050;
-    border: none;
-}
-QListWidget::item:hover {
-    background-color: #454545;
 }
 QPushButton {
     background-color: #404040;
@@ -43,9 +38,9 @@ QPushButton {
     border: 2px solid #505050;
     border-radius: 10px;
     padding: 10px;
-    font-size: 48pt;
-    min-width: 300px;
-    min-height: 120px;
+    font-size: 28pt;
+    min-width: 180px;
+    min-height: 70px;
 }
 QPushButton:hover {
     background-color: #505050;
@@ -74,15 +69,37 @@ QPushButton:pressed {
       <item>
         <widget class="QLabel" name="titleLabel">
           <property name="text"><string>Reports</string></property>
+          <property name="alignment">
+            <set>Qt::AlignCenter</set>
+          </property>
         </widget>
       </item>
       <item>
-        <widget class="QListWidget" name="reportsList"/>
+        <widget class="QListWidget" name="reportListWidget"/>
       </item>
       <item>
-        <widget class="QPushButton" name="backButton">
-          <property name="text"><string>Back</string></property>
-        </widget>
+        <layout class="QHBoxLayout" name="buttonLayout">
+          <item>
+            <widget class="QPushButton" name="generateButton">
+              <property name="text"><string>Generate Report</string></property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QPushButton" name="viewButton">
+              <property name="text"><string>View Report</string></property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QPushButton" name="deleteButton">
+              <property name="text"><string>Delete Report</string></property>
+            </widget>
+          </item>
+          <item>
+            <widget class="QPushButton" name="backButton">
+              <property name="text"><string>Back</string></property>
+            </widget>
+          </item>
+        </layout>
       </item>
     </layout>
   </widget>

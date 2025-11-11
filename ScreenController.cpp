@@ -20,14 +20,18 @@ ScreenController::ScreenController(QWidget *parent)
     reportsScreen = new Reports(this);
     createUserScreen = new CreateUserScreen(this);
     deleteUserScreen = new DeleteUserScreen(this);
+    logViewerScreen = new LogViewer(this);
+    reportViewerScreen = new ReportViewer(this);
 
-    stack->addWidget(userSelectScreen); // index 0
-    stack->addWidget(loginScreen);      // index 1
-    stack->addWidget(mainDashboard);    // index 2
-    stack->addWidget(logsScreen);       // index 3
-    stack->addWidget(reportsScreen);    // index 4
-    stack->addWidget(createUserScreen); // index 5
-    stack->addWidget(deleteUserScreen); // index 6
+    stack->addWidget(userSelectScreen);     // index 0
+    stack->addWidget(loginScreen);          // index 1
+    stack->addWidget(mainDashboard);        // index 2
+    stack->addWidget(logsScreen);           // index 3
+    stack->addWidget(reportsScreen);        // index 4
+    stack->addWidget(createUserScreen);     // index 5
+    stack->addWidget(deleteUserScreen);     // index 6
+    stack->addWidget(logViewerScreen);      // index 7
+    stack->addWidget(reportViewerScreen);   // index 8
     stack->setCurrentWidget(userSelectScreen);
 
     auto layout = new QVBoxLayout(this);
@@ -45,6 +49,16 @@ ScreenController::ScreenController(QWidget *parent)
     // Handle back button from delete user screen
     connect(deleteUserScreen, &DeleteUserScreen::backRequested, this, [this]() {
         stack->setCurrentWidget(mainDashboard);
+    });
+    
+    // Handle back button from log viewer
+    connect(logViewerScreen, &LogViewer::backRequested, this, [this]() {
+        stack->setCurrentWidget(logsScreen);
+    });
+    
+    // Handle back button from report viewer
+    connect(reportViewerScreen, &ReportViewer::backRequested, this, [this]() {
+        stack->setCurrentWidget(reportsScreen);
     });
 }
 
@@ -95,6 +109,12 @@ void ScreenController::setupMainDashboard(const QString &username)
     connect(reportsScreen, &Reports::backRequested, this, [this]() {
         stack->setCurrentWidget(mainDashboard);
     });
+    
+    // View log file navigation
+    connect(logsScreen, &Logs::viewLogFileRequested, this, &ScreenController::showLogViewer);
+    
+    // View report file navigation
+    connect(reportsScreen, &Reports::viewReportRequested, this, &ScreenController::showReportViewer);
     
     // When a user is deleted, refresh user select screen if needed
     connect(deleteUserScreen, &DeleteUserScreen::userDeleted, this, [this]() {
@@ -152,4 +172,16 @@ void ScreenController::setupConnections(){
         });
         stack->setCurrentWidget(userSelectScreen);
     });
+}
+
+void ScreenController::showLogViewer(const QString &filepath)
+{
+    logViewerScreen->loadLogFile(filepath);
+    stack->setCurrentWidget(logViewerScreen);
+}
+
+void ScreenController::showReportViewer(const QString &filepath)
+{
+    reportViewerScreen->loadReportFile(filepath);
+    stack->setCurrentWidget(reportViewerScreen);
 }

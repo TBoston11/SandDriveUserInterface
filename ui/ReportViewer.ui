@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
-  <class>Logs</class>
-  <widget class="QWidget" name="Logs">
+  <class>ReportViewer</class>
+  <widget class="QWidget" name="ReportViewer">
     <property name="geometry">
       <rect>
         <x>0</x>
@@ -11,26 +11,21 @@
       </rect>
     </property>
     <property name="styleSheet">
-      <string notr="true">QWidget#Logs {
+      <string notr="true">QWidget#ReportViewer {
     background-color: #303030;
 }
 QLabel {
     color: white;
-    font-size: 48pt;
+    font-size: 36pt;
+    font-weight: bold;
 }
-QListWidget {
+QTextEdit {
     background-color: #404040;
     color: white;
     border: 2px solid #505050;
     border-radius: 10px;
-    padding: 10px;
+    padding: 15px;
     font-size: 16pt;
-}
-QListWidget::item {
-    padding: 10px;
-}
-QListWidget::item:selected {
-    background-color: #505050;
 }
 QPushButton {
     background-color: #404040;
@@ -52,49 +47,37 @@ QPushButton:pressed {
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
       <property name="spacing">
-        <number>40</number>
+        <number>20</number>
       </property>
       <property name="leftMargin">
-        <number>80</number>
+        <number>60</number>
       </property>
       <property name="topMargin">
-        <number>80</number>
+        <number>60</number>
       </property>
       <property name="rightMargin">
-        <number>80</number>
+        <number>60</number>
       </property>
       <property name="bottomMargin">
-        <number>80</number>
+        <number>60</number>
       </property>
       <item>
         <widget class="QLabel" name="titleLabel">
-          <property name="text"><string>Logs</string></property>
+          <property name="text"><string>Report Viewer</string></property>
           <property name="alignment">
             <set>Qt::AlignCenter</set>
           </property>
         </widget>
       </item>
       <item>
-        <widget class="QListWidget" name="logListWidget"/>
+        <widget class="QTextEdit" name="reportTextEdit">
+          <property name="readOnly"><bool>true</bool></property>
+        </widget>
       </item>
       <item>
-        <layout class="QHBoxLayout" name="buttonLayout">
-          <item>
-            <widget class="QPushButton" name="viewLogButton">
-              <property name="text"><string>View Log File</string></property>
-            </widget>
-          </item>
-          <item>
-            <widget class="QPushButton" name="addTestLogButton">
-              <property name="text"><string>Add Test Log</string></property>
-            </widget>
-          </item>
-          <item>
-            <widget class="QPushButton" name="backButton">
-              <property name="text"><string>Back</string></property>
-            </widget>
-          </item>
-        </layout>
+        <widget class="QPushButton" name="backButton">
+          <property name="text"><string>Back</string></property>
+        </widget>
       </item>
     </layout>
   </widget>

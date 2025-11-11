@@ -10,6 +10,8 @@
 #include "screens/Reports.h"
 #include "screens/CreateUserScreen.h"
 #include "screens/DeleteUserScreen.h"
+#include "screens/LogViewer.h"
+#include "screens/ReportViewer.h"
 
 class ScreenController : public QWidget
 {
@@ -27,9 +29,13 @@ private:
     DeleteUserScreen *deleteUserScreen;
     Logs *logsScreen;
     Reports *reportsScreen;
+    LogViewer *logViewerScreen;
+    ReportViewer *reportViewerScreen;
 
     void setupConnections();
     void setupMainDashboard(const QString &username);
+    void showLogViewer(const QString &filepath);
+    void showReportViewer(const QString &filepath);
 };
 
 #endif // SCREENCONTROLLER_H

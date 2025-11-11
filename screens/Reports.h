@@ -14,12 +14,21 @@ class Reports : public QWidget
 public:
     explicit Reports(QWidget *parent = nullptr);
     ~Reports();
+    
+    void refreshReports();
 
 signals:
     void backRequested();
+    void viewReportRequested(const QString &filepath);
+
+private slots:
+    void onGenerateReport();
+    void onViewReport();
+    void onDeleteReport();
 
 private:
     Ui::Reports *ui;
+    QString m_currentUser;
 };
 
 #endif // REPORTS_H
