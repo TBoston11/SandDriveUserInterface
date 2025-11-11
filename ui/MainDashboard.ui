@@ -166,7 +166,7 @@ QPushButton:pressed {
       </spacer>
      </item>
      <item>
-      <widget class="QPushButton" name="launchVmButton">
+      <widget class="QPushButton" name="scansButton">
        <property name="minimumSize">
         <size>
          <width>180</width>
@@ -180,7 +180,7 @@ QPushButton:pressed {
         </font>
        </property>
        <property name="text">
-        <string>Launch VM</string>
+        <string>Scans</string>
        </property>
       </widget>
      </item>

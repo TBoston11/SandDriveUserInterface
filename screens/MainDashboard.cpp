@@ -15,7 +15,7 @@ MainDashboard::MainDashboard(const QString &username, QWidget *parent)
     connect(ui->logoutButton, &QPushButton::clicked, this, &MainDashboard::logoutRequested);
 
     // Connect action buttons
-    connect(ui->launchVmButton, &QPushButton::clicked, this, [this]() { emit launchVmRequested(); });
+    connect(ui->scansButton, &QPushButton::clicked, this, [this]() { emit scansRequested(); });
     connect(ui->logsButton, &QPushButton::clicked, this, [this]() { emit logsRequested(); });
     connect(ui->reportsButton, &QPushButton::clicked, this, [this]() { emit reportsRequested(); });
 

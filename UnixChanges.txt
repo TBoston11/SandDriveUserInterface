@@ -1,0 +1,150 @@
+# Unix/Linux Compatibility Changes for SandDriveUserInterface
+
+This document outlines the changes needed to build and run the SandDriveUserInterface application on Unix/Linux systems.
+
+## Current Status
+The Qt/C++ project is already mostly cross-platform. The following changes will ensure smooth builds and runs on Unix/Linux.
+
+---
+
+## 1. Platform-specific paths (already handled)
+✅ Using `QStandardPaths::AppDataLocation` for logs/reports/DB
+- macOS: `~/Library/Application Support/SandDriveUserInterface/`
+- Linux: `~/.local/share/SandDriveUserInterface/`
+
+**No changes needed** unless macOS paths are hardcoded elsewhere.
+
+---
+
+## 2. CMake: remove macOS-specific settings
+Wrap macOS-only variables in CMakeLists.txt:
+
+```cmake
+if(APPLE)
+    set(MACOSX_BUNDLE_GUI_IDENTIFIER com.sanddrive.SandDriveUserInterface)
+    set(MACOSX_BUNDLE_BUNDLE_VERSION ${PROJECT_VERSION})
+    set(MACOSX_BUNDLE_SHORT_VERSION_STRING ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR})
+    set(MACOSX_BUNDLE_ICON_FILE AppIcon.icns)
+    # ... other MACOSX_* settings ...
+endif()
+```
+
+**Why:** These variables generate warnings on Linux. Wrapping silences them.
+
+---
+
+## 3. Application bundle vs. executable
+On macOS: `.app` bundle
+On Linux: plain executable
+
+**CMake changes** (in qt_add_executable):
+
+```cmake
+qt_add_executable(SandDriveUserInterface
+    ${PROJECT_SOURCES}
+)
+
+if(APPLE)
+    set_target_properties(SandDriveUserInterface PROPERTIES
+        MACOSX_BUNDLE TRUE
+        # ... other bundle settings ...
+    )
+endif()
+```
+
+---
+
+## 4. Resource file paths
+✅ Already correct - resources.qrc uses relative paths (Images/SandDriveLogo.png)
+
+**No changes needed.**
+
+---
+
+## 5. Install Qt6 on Linux
+
+**Debian/Ubuntu:**
+```bash
+sudo apt update
+sudo apt install qt6-base-dev qt6-tools-dev cmake ninja-build build-essential
+```
+
+**Fedora/RHEL:**
+```bash
+sudo dnf install qt6-qtbase-devel qt6-qttools-devel cmake ninja-build gcc-c++
+```
+
+**Arch:**
+```bash
+sudo pacman -S qt6-base qt6-tools cmake ninja
+```
+
+---
+
+## 6. Build on Linux (same steps as macOS)
+
+```bash
+# Configure (from project root)
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Debug
+
+# Build
+cmake --build build -j
+
+# Run
+./build/SandDriveUserInterface  # (no .app on Linux)
+```
+
+---
+
+## 7. Desktop integration (optional, Linux-specific)
+Create a .desktop file for app launcher icon:
+
+```desktop
+[Desktop Entry]
+Type=Application
+Name=SandDrive User Interface
+Exec=/path/to/build/SandDriveUserInterface
+Icon=/path/to/Images/SandDriveLogo.png
+Terminal=false
+Categories=Utility;
+```
+
+Install it:
+```bash
+cp SandDriveUserInterface.desktop ~/.local/share/applications/
+update-desktop-database ~/.local/share/applications/
+```
+
+---
+
+## 8. Test checklist for Linux
+
+- [ ] Build completes without errors
+- [ ] App launches (no missing Qt libs)
+- [ ] Database created at ~/.local/share/SandDriveUserInterface/sanddrive_users.db
+- [ ] Logs directory: ~/.local/share/SandDriveUserInterface/logs/
+- [ ] Reports directory: ~/.local/share/SandDriveUserInterface/reports/
+- [ ] Logo displays correctly
+- [ ] All screens work (login, dashboard, logs, reports, delete user)
+- [ ] Password hashing works (login as admin, create/delete users)
+
+---
+
+## Summary of Required Changes
+
+1. **Wrap macOS-specific CMake variables** in `if(APPLE)` blocks
+2. **Conditionally set `MACOSX_BUNDLE`** only on macOS
+3. **Install Qt6 on Linux** (via package manager or Qt installer)
+4. **Build and run** — same CMake commands, but executable is `./build/SandDriveUserInterface` (not .app)
+
+---
+
+## Architecture Notes
+
+The app's architecture is already cross-platform:
+- QStandardPaths for data directories
+- Qt SQL for database
+- Resource embedding via .qrc
+- No platform-specific system calls
+
+These tweaks ensure clean builds and native behavior on Unix/Linux systems.

@@ -22,6 +22,7 @@ ScreenController::ScreenController(QWidget *parent)
     deleteUserScreen = new DeleteUserScreen(this);
     logViewerScreen = new LogViewer(this);
     reportViewerScreen = new ReportViewer(this);
+    scanScreen = new ScanScreen(this);
 
     stack->addWidget(userSelectScreen);     // index 0
     stack->addWidget(loginScreen);          // index 1
@@ -32,6 +33,7 @@ ScreenController::ScreenController(QWidget *parent)
     stack->addWidget(deleteUserScreen);     // index 6
     stack->addWidget(logViewerScreen);      // index 7
     stack->addWidget(reportViewerScreen);   // index 8
+    stack->addWidget(scanScreen);           // index 9
     stack->setCurrentWidget(userSelectScreen);
 
     auto layout = new QVBoxLayout(this);
@@ -59,6 +61,11 @@ ScreenController::ScreenController(QWidget *parent)
     // Handle back button from report viewer
     connect(reportViewerScreen, &ReportViewer::backRequested, this, [this]() {
         stack->setCurrentWidget(reportsScreen);
+    });
+    
+    // Handle back button from scan screen
+    connect(scanScreen, &ScanScreen::backRequested, this, [this]() {
+        stack->setCurrentWidget(mainDashboard);
     });
 }
 
@@ -91,6 +98,11 @@ void ScreenController::setupMainDashboard(const QString &username)
     });
 
     // Dashboard action buttons
+    connect(static_cast<MainDashboard*>(mainDashboard), &MainDashboard::scansRequested, this, [this]() {
+        // Show scans screen
+        stack->setCurrentWidget(scanScreen);
+    });
+
     connect(static_cast<MainDashboard*>(mainDashboard), &MainDashboard::logsRequested, this, [this]() {
         // Show logs screen
         stack->setCurrentWidget(logsScreen);

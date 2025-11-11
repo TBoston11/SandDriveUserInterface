@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+  <class>ScanScreen</class>
+  <widget class="QWidget" name="ScanScreen">
+    <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1200</width>
+        <height>800</height>
+      </rect>
+    </property>
+    <property name="styleSheet">
+      <string notr="true">QWidget#ScanScreen {
+    background-color: #303030;
+}
+QLabel {
+    color: white;
+    font-size: 36pt;
+    font-weight: bold;
+}
+QPushButton {
+    background-color: #404040;
+    color: white;
+    border: 2px solid #505050;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 32pt;
+    min-width: 200px;
+    min-height: 80px;
+}
+QPushButton:hover {
+    background-color: #505050;
+    border-color: #606060;
+}
+QPushButton:pressed {
+    background-color: #606060;
+}</string>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="spacing">
+        <number>40</number>
+      </property>
+      <property name="leftMargin">
+        <number>80</number>
+      </property>
+      <property name="topMargin">
+        <number>80</number>
+      </property>
+      <property name="rightMargin">
+        <number>80</number>
+      </property>
+      <property name="bottomMargin">
+        <number>80</number>
+      </property>
+      <item>
+        <widget class="QLabel" name="titleLabel">
+          <property name="text"><string>Scans</string></property>
+          <property name="alignment">
+            <set>Qt::AlignCenter</set>
+          </property>
+        </widget>
+      </item>
+      <item>
+        <spacer name="topSpacer">
+          <property name="orientation">
+            <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+            <size>
+              <width>20</width>
+              <height>40</height>
+            </size>
+          </property>
+        </spacer>
+      </item>
+      <item>
+        <widget class="QPushButton" name="quickScanButton">
+          <property name="text"><string>Run Quick Scan</string></property>
+        </widget>
+      </item>
+      <item>
+        <widget class="QPushButton" name="detailedScanButton">
+          <property name="text"><string>Run Detailed Scan</string></property>
+        </widget>
+      </item>
+      <item>
+        <widget class="QPushButton" name="openTerminalButton">
+          <property name="text"><string>Open Terminal</string></property>
+        </widget>
+      </item>
+      <item>
+        <spacer name="bottomSpacer">
+          <property name="orientation">
+            <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+            <size>
+              <width>20</width>
+              <height>40</height>
+            </size>
+          </property>
+        </spacer>
+      </item>
+      <item>
+        <widget class="QPushButton" name="backButton">
+          <property name="text"><string>Back</string></property>
+        </widget>
+      </item>
+    </layout>
+  </widget>
+  <resources/>
+  <connections/>
+</ui>

@@ -20,7 +20,7 @@ public:
 
 signals:
     void logoutRequested();
-    void launchVmRequested();
+    void scansRequested();
     void logsRequested();
     void reportsRequested();
     void createUserRequested();
