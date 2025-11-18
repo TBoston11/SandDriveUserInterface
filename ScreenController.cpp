@@ -6,6 +6,7 @@
 #include "screens/CreateUserScreen.h"
 #include "screens/DeleteUserScreen.h"
 #include "core/DatabaseManager.h"
+#include "core/VMManager.h"
 #include "ScreenController.h"
 
 ScreenController::ScreenController(QWidget *parent)
@@ -23,6 +24,7 @@ ScreenController::ScreenController(QWidget *parent)
     logViewerScreen = new LogViewer(this);
     reportViewerScreen = new ReportViewer(this);
     scanScreen = new ScanScreen(this);
+    vmTerminalScreen = new VMTerminal(this);
 
     stack->addWidget(userSelectScreen);     // index 0
     stack->addWidget(loginScreen);          // index 1
@@ -34,6 +36,7 @@ ScreenController::ScreenController(QWidget *parent)
     stack->addWidget(logViewerScreen);      // index 7
     stack->addWidget(reportViewerScreen);   // index 8
     stack->addWidget(scanScreen);           // index 9
+    stack->addWidget(vmTerminalScreen);     // index 10
     stack->setCurrentWidget(userSelectScreen);
 
     auto layout = new QVBoxLayout(this);
@@ -66,6 +69,18 @@ ScreenController::ScreenController(QWidget *parent)
     // Handle back button from scan screen
     connect(scanScreen, &ScanScreen::backRequested, this, [this]() {
         stack->setCurrentWidget(mainDashboard);
+    });
+    
+    // Handle Open Terminal button from scan screen
+    connect(scanScreen, &ScanScreen::openTerminalRequested, this, [this]() {
+        // Start VM and show terminal screen
+        VMManager::instance().startVM();
+        stack->setCurrentWidget(vmTerminalScreen);
+    });
+    
+    // Handle back button from VM terminal
+    connect(vmTerminalScreen, &VMTerminal::backRequested, this, [this]() {
+        stack->setCurrentWidget(scanScreen);
     });
 }
 

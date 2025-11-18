@@ -13,6 +13,7 @@
 #include "screens/LogViewer.h"
 #include "screens/ReportViewer.h"
 #include "screens/ScanScreen.h"
+#include "screens/VMTerminal.h"
 
 class ScreenController : public QWidget
 {
@@ -33,6 +34,7 @@ private:
     LogViewer *logViewerScreen;
     ReportViewer *reportViewerScreen;
     ScanScreen *scanScreen;
+    VMTerminal *vmTerminalScreen;
 
     void setupConnections();
     void setupMainDashboard(const QString &username);

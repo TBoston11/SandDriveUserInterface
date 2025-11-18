@@ -17,6 +17,7 @@ public:
 
 signals:
     void backRequested();
+    void openTerminalRequested();
 
 private:
     Ui::ScanScreen *ui;

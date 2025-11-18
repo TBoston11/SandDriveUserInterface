@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+  <class>VMTerminal</class>
+  <widget class="QWidget" name="VMTerminal">
+    <property name="geometry">
+      <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1200</width>
+        <height>800</height>
+      </rect>
+    </property>
+    <property name="styleSheet">
+      <string notr="true">QWidget#VMTerminal {
+    background-color: #303030;
+}
+QLabel {
+    color: white;
+    font-size: 36pt;
+    font-weight: bold;
+}
+QTextEdit {
+    background-color: #000000;
+    color: #00ff00;
+    border: 2px solid #505050;
+    border-radius: 10px;
+    padding: 15px;
+    font-size: 14pt;
+    font-family: "Courier New", monospace;
+}
+QLineEdit {
+    background-color: #404040;
+    color: white;
+    border: 2px solid #505050;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 16pt;
+    font-family: "Courier New", monospace;
+}
+QPushButton {
+    background-color: #404040;
+    color: white;
+    border: 2px solid #505050;
+    border-radius: 10px;
+    padding: 10px;
+    font-size: 24pt;
+    min-width: 200px;
+    min-height: 60px;
+}
+QPushButton:hover {
+    background-color: #505050;
+    border-color: #606060;
+}
+QPushButton:pressed {
+    background-color: #606060;
+}
+QPushButton#stopVMButton {
+    background-color: #8B0000;
+}
+QPushButton#stopVMButton:hover {
+    background-color: #A52A2A;
+}</string>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+      <property name="spacing">
+        <number>20</number>
+      </property>
+      <property name="leftMargin">
+        <number>60</number>
+      </property>
+      <property name="topMargin">
+        <number>60</number>
+      </property>
+      <property name="rightMargin">
+        <number>60</number>
+      </property>
+      <property name="bottomMargin">
+        <number>60</number>
+      </property>
+      <item>
+        <widget class="QLabel" name="titleLabel">
+          <property name="text"><string>VM Terminal</string></property>
+          <property name="alignment">
+            <set>Qt::AlignCenter</set>
+          </property>
+        </widget>
+      </item>
+      <item>
+        <widget class="QTextEdit" name="terminalOutput">
+          <property name="readOnly"><bool>false</bool></property>
+        </widget>
+      </item>
+      <item>
+        <layout class="QHBoxLayout" name="buttonLayout">
+          <item>
+            <widget class="QPushButton" name="stopVMButton">
+              <property name="text"><string>Stop VM</string></property>
+            </widget>
+          </item>
+          <item>
+            <spacer name="horizontalSpacer">
+              <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+                <size>
+                  <width>40</width>
+                  <height>20</height>
+                </size>
+              </property>
+            </spacer>
+          </item>
+          <item>
+            <widget class="QPushButton" name="backButton">
+              <property name="text"><string>Back</string></property>
+            </widget>
+          </item>
+        </layout>
+      </item>
+    </layout>
+  </widget>
+  <resources/>
+  <connections/>
+</ui>
