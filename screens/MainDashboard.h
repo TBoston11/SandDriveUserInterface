@@ -26,6 +26,10 @@ signals:
     void createUserRequested();
     void deleteUserRequested();
 
+private slots:
+    void onSleepClicked();
+    void onShutdownClicked();
+
 private:
     Ui::MainDashboard *ui;
     QString m_username;
