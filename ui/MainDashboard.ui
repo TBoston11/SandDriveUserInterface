@@ -12,24 +12,28 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget#MainDashboard {
-    background-color: #303030;
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop:0 #1c1c1e, stop:1 #2c2c2e);
 }
 QLabel {
-    color: white;
+    color: #f5f5f7;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui;
 }
 QPushButton {
-    background-color: #404040;
-    color: white;
-    border: 2px solid #505050;
-    border-radius: 10px;
-    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #f5f5f7;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui;
+    font-weight: 500;
 }
 QPushButton:hover {
-    background-color: #505050;
-    border-color: #606060;
+    background-color: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
 }
 QPushButton:pressed {
-    background-color: #606060;
+    background-color: rgba(255, 255, 255, 0.16);
 }</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -43,13 +47,16 @@ QPushButton:pressed {
     <number>20</number>
    </property>
    <property name="rightMargin">
-    <number>80</number>
+    <number>20</number>
    </property>
    <property name="bottomMargin">
     <number>80</number>
    </property>
    <item>
     <layout class="QHBoxLayout" name="controlLayout">
+     <property name="spacing">
+      <number>10</number>
+     </property>
      <item>
       <spacer name="controlLeftSpacer">
        <property name="orientation">
@@ -82,19 +89,21 @@ QPushButton:pressed {
        </property>
        <property name="styleSheet">
         <string notr="true">QPushButton {
-    background-color: #505050;
-    color: white;
-    border: 2px solid #606060;
-    border-radius: 8px;
-    padding: 8px;
-    font-size: 14px;
+    background-color: rgba(120, 120, 128, 0.32);
+    color: #f5f5f7;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui;
+    font-weight: 500;
 }
 QPushButton:hover {
-    background-color: #606060;
-    border-color: #707070;
+    background-color: rgba(120, 120, 128, 0.40);
+    border: 1px solid rgba(255, 255, 255, 0.12);
 }
 QPushButton:pressed {
-    background-color: #707070;
+    background-color: rgba(120, 120, 128, 0.48);
 }</string>
        </property>
       </widget>
@@ -118,19 +127,20 @@ QPushButton:pressed {
        </property>
        <property name="styleSheet">
         <string notr="true">QPushButton {
-    background-color: #8B0000;
+    background-color: #ff3b30;
     color: white;
-    border: 2px solid #A00000;
-    border-radius: 8px;
-    padding: 8px;
-    font-size: 14px;
+    border: none;
+    border-radius: 10px;
+    padding: 8px 16px;
+    font-size: 13px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui;
+    font-weight: 600;
 }
 QPushButton:hover {
-    background-color: #A00000;
-    border-color: #B00000;
+    background-color: #ff453a;
 }
 QPushButton:pressed {
-    background-color: #B00000;
+    background-color: #ff6259;
 }</string>
        </property>
       </widget>
@@ -211,8 +221,8 @@ QPushButton:pressed {
      </property>
      <property name="font">
       <font>
-       <pointsize>48</pointsize>
-       <bold>true</bold>
+       <pointsize>52</pointsize>
+       <weight>300</weight>
       </font>
      </property>
      <property name="text">
@@ -220,6 +230,9 @@ QPushButton:pressed {
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color: #f5f5f7; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui;</string>
      </property>
     </widget>
    </item>
@@ -259,13 +272,13 @@ QPushButton:pressed {
        <property name="minimumSize">
         <size>
          <width>180</width>
-         <height>60</height>
+         <height>56</height>
         </size>
        </property>
        <property name="font">
         <font>
-         <pointsize>14</pointsize>
-         <bold>true</bold>
+         <pointsize>16</pointsize>
+         <weight>500</weight>
         </font>
        </property>
        <property name="text">
@@ -278,13 +291,13 @@ QPushButton:pressed {
        <property name="minimumSize">
         <size>
          <width>180</width>
-         <height>60</height>
+         <height>56</height>
         </size>
        </property>
        <property name="font">
         <font>
-         <pointsize>14</pointsize>
-         <bold>true</bold>
+         <pointsize>16</pointsize>
+         <weight>500</weight>
         </font>
        </property>
        <property name="text">
@@ -297,13 +310,13 @@ QPushButton:pressed {
        <property name="minimumSize">
         <size>
          <width>180</width>
-         <height>60</height>
+         <height>56</height>
         </size>
        </property>
        <property name="font">
         <font>
-         <pointsize>14</pointsize>
-         <bold>true</bold>
+         <pointsize>16</pointsize>
+         <weight>500</weight>
         </font>
        </property>
        <property name="text">
@@ -316,13 +329,13 @@ QPushButton:pressed {
              <property name="minimumSize">
                 <size>
                  <width>180</width>
-                 <height>60</height>
+                 <height>56</height>
                 </size>
              </property>
              <property name="font">
                 <font>
-                 <pointsize>14</pointsize>
-                 <bold>true</bold>
+                 <pointsize>16</pointsize>
+                 <weight>500</weight>
                 </font>
              </property>
              <property name="text">
@@ -335,13 +348,13 @@ QPushButton:pressed {
              <property name="minimumSize">
                 <size>
                  <width>180</width>
-                 <height>60</height>
+                 <height>56</height>
                 </size>
              </property>
              <property name="font">
                 <font>
-                 <pointsize>14</pointsize>
-                 <bold>true</bold>
+                 <pointsize>16</pointsize>
+                 <weight>500</weight>
                 </font>
              </property>
              <property name="text">
@@ -382,16 +395,31 @@ QPushButton:pressed {
      <property name="minimumSize">
       <size>
        <width>200</width>
-       <height>80</height>
+       <height>56</height>
       </size>
      </property>
      <property name="font">
       <font>
-       <pointsize>20</pointsize>
+       <pointsize>18</pointsize>
+       <weight>500</weight>
       </font>
      </property>
      <property name="text">
       <string>Logout</string>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: #f5f5f7;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 12px;
+}
+QPushButton:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+QPushButton:pressed {
+    background-color: rgba(255, 255, 255, 0.16);
+}</string>
      </property>
     </widget>
    </item>

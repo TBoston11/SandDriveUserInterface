@@ -6,6 +6,7 @@
 #include <QLabel>
 #include <QIcon>
 #include <QStyle>
+#include <QMessageBox>
 #include "../core/DatabaseManager.h"
 
 UserSelectScreen::UserSelectScreen(QWidget *parent)
@@ -14,11 +15,18 @@ UserSelectScreen::UserSelectScreen(QWidget *parent)
 {
     ui->setupUi(this);
 
+    // Connect control buttons
+    connect(ui->sleepButton, &QPushButton::clicked, this, &UserSelectScreen::onSleepClicked);
+    connect(ui->shutdownButton, &QPushButton::clicked, this, &UserSelectScreen::onShutdownClicked);
+
     // Get the horizontal layout from the scroll area
     QHBoxLayout *layout = qobject_cast<QHBoxLayout*>(ui->scrollAreaWidgetContents->layout());
     
     // Populate from database
     QStringList users = DatabaseManager::instance().listUsers();
+    
+    // Insert user buttons between the spacers (at position 1, 2, 3, etc.)
+    int insertPosition = 1;
     
     for (const QString &username : users) {
         // Create a container widget for each user
@@ -71,11 +79,9 @@ UserSelectScreen::UserSelectScreen(QWidget *parent)
             emit userSelected(username);
         });
         
-        layout->addWidget(userWidget);
+        // Insert between the spacers to keep buttons centered
+        layout->insertWidget(insertPosition++, userWidget);
     }
-    
-    // Add stretch at the end to push buttons to the left
-    layout->addStretch();
 }
 
 UserSelectScreen::~UserSelectScreen()
@@ -87,4 +93,14 @@ UserSelectScreen::~UserSelectScreen()
 void UserSelectScreen::onUserClicked()
 {
     // Not used currently; selection is handled via the lambda in the constructor.
+}
+
+void UserSelectScreen::onSleepClicked()
+{
+    QMessageBox::information(this, "Sleep", "Sleep button clicked!\n\nThis will put the host machine to sleep.");
+}
+
+void UserSelectScreen::onShutdownClicked()
+{
+    QMessageBox::information(this, "Shutdown", "Shutdown button clicked!\n\nThis will shutdown the host machine.");
 }

@@ -12,7 +12,8 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget#UserSelectScreen {
-    background-color: #303030;
+    background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                stop:0 #1c1c1e, stop:1 #2c2c2e);
 }
 
 QScrollArea {
@@ -25,12 +26,13 @@ QWidget#scrollAreaWidgetContents {
 }
 
 QPushButton#userButton {
-    background-color: #404040;
-    border: 3px solid #505050;
-    border-radius: 15px;
-    color: white;
+    background-color: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 18px;
+    color: #f5f5f7;
     font-size: 24pt;
-    font-weight: bold;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui;
+    font-weight: 500;
     min-width: 200px;
     max-width: 200px;
     min-height: 280px;
@@ -38,18 +40,19 @@ QPushButton#userButton {
 }
 
 QPushButton#userButton:hover {
-    background-color: #4a4a4a;
-    border: 3px solid #606060;
+    background-color: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.18);
 }
 
 QPushButton#userButton:pressed {
-    background-color: #505050;
+    background-color: rgba(255, 255, 255, 0.16);
 }
 
 QLabel#titleLabel {
-    color: white;
+    color: #f5f5f7;
     font-size: 36pt;
-    font-weight: bold;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui;
+    font-weight: 300;
 }</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
@@ -60,14 +63,104 @@ QLabel#titleLabel {
     <number>80</number>
    </property>
    <property name="topMargin">
-    <number>80</number>
+    <number>20</number>
    </property>
    <property name="rightMargin">
-    <number>80</number>
+    <number>20</number>
    </property>
    <property name="bottomMargin">
     <number>80</number>
    </property>
+   <item>
+    <layout class="QHBoxLayout" name="controlLayout">
+     <property name="spacing">
+      <number>10</number>
+     </property>
+     <item>
+      <spacer name="controlLeftSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QPushButton" name="sleepButton">
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>🌙</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+    background-color: rgba(120, 120, 128, 0.32);
+    color: #f5f5f7;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 25px;
+    font-size: 22px;
+}
+QPushButton:hover {
+    background-color: rgba(120, 120, 128, 0.40);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+QPushButton:pressed {
+    background-color: rgba(120, 120, 128, 0.48);
+}</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="shutdownButton">
+       <property name="minimumSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>50</width>
+         <height>50</height>
+        </size>
+       </property>
+       <property name="text">
+        <string>⏻</string>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">QPushButton {
+    background-color: #ff3b30;
+    color: white;
+    border: none;
+    border-radius: 25px;
+    font-size: 26px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #ff453a;
+}
+QPushButton:pressed {
+    background-color: #ff6259;
+}</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
    <item>
     <layout class="QHBoxLayout" name="logoLayout">
      <item>
@@ -127,16 +220,6 @@ QLabel#titleLabel {
     </layout>
    </item>
    <item>
-    <widget class="QLabel" name="titleLabel">
-     <property name="text">
-      <string>Select User</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item>
     <widget class="QScrollArea" name="scrollArea">
      <property name="widgetResizable">
       <bool>true</bool>
@@ -158,20 +241,47 @@ QLabel#titleLabel {
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout">
        <property name="spacing">
-        <number>30</number>
+        <number>40</number>
        </property>
        <property name="leftMargin">
-        <number>20</number>
+        <number>0</number>
        </property>
        <property name="topMargin">
-        <number>100</number>
+        <number>0</number>
        </property>
        <property name="rightMargin">
-        <number>20</number>
+        <number>0</number>
        </property>
        <property name="bottomMargin">
-        <number>100</number>
+        <number>0</number>
        </property>
+       <item>
+        <spacer name="userLeftSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <!-- User buttons will be inserted here dynamically -->
+       <item>
+        <spacer name="userRightSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
       </layout>
      </widget>
     </widget>

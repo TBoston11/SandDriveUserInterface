@@ -20,6 +20,8 @@ signals:
 
 private slots:
     void onUserClicked();  // Example slot for handling user selection
+    void onSleepClicked();
+    void onShutdownClicked();
 
 private:
     Ui::UserSelectScreen *ui;
