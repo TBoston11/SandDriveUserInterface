@@ -2,6 +2,7 @@
 #include "ui_VMTerminal.h"
 #include "../core/VMManager.h"
 #include <QScrollBar>
+#include <QRegularExpression>
 
 // InteractiveTerminal implementation
 InteractiveTerminal::InteractiveTerminal(QWidget *parent)
@@ -17,6 +18,19 @@ void InteractiveTerminal::keyPressEvent(QKeyEvent *event)
     // Get cursor position
     QTextCursor cursor = textCursor();
     int cursorPos = cursor.position();
+    
+    // Handle Tab key - send it to the VM for autocomplete
+    if (event->key() == Qt::Key_Tab) {
+        // Get current command
+        cursor.setPosition(promptPosition);
+        cursor.movePosition(QTextCursor::End, QTextCursor::KeepAnchor);
+        QString command = cursor.selectedText();
+        
+        // Send tab character to VM
+        emit commandEntered(command + "\t");
+        event->accept();
+        return;
+    }
     
     // Don't allow editing before the prompt
     if (cursorPos < promptPosition && event->key() != Qt::Key_Up && 
@@ -169,9 +183,35 @@ VMTerminal::~VMTerminal()
 
 void VMTerminal::appendOutput(const QString &text)
 {
+    // Strip ANSI escape codes more comprehensively
+    QString cleanText = text;
+    
+    // Remove all ESC sequences: ESC followed by [ and parameters
+    cleanText.remove(QRegularExpression("\x1B\\[[^m]*m")); // Color codes
+    cleanText.remove(QRegularExpression("\x1B\\[[0-9;?]*[A-Za-z]")); // Cursor movement, modes
+    cleanText.remove(QRegularExpression("\x1B\\][^\x07]*\x07")); // Operating system commands
+    cleanText.remove(QRegularExpression("\x1B[=>]")); // Keypad modes
+    cleanText.remove(QRegularExpression("\x1B\\([B0]")); // Character sets
+    cleanText.remove(QRegularExpression("\x1B.")); // Any other ESC sequences
+    
+    // Remove specific problematic sequences
+    cleanText.remove(QRegularExpression("\\[\\?2004[hl]")); // Bracketed paste mode
+    cleanText.remove(QRegularExpression("\\[\\?[0-9]+[hl]")); // Private mode sequences
+    cleanText.remove(QRegularExpression("\\[[0-9]+;[0-9]+H")); // Cursor position
+    cleanText.remove(QRegularExpression("\\[K")); // Erase line
+    cleanText.remove(QRegularExpression("\\[J")); // Erase display
+    cleanText.remove(QRegularExpression("\\[6n")); // Cursor position report
+    
+    // Remove Bell character
+    cleanText.remove(QChar('\x07'));
+    
+    // Remove control characters except tab, newline, carriage return
+    // This includes backspace (\x08) which causes display issues
+    cleanText.remove(QRegularExpression("[\x00-\x06\x0B\x0C\x0E-\x1F]"));
+    
     QTextCursor cursor = terminal->textCursor();
     cursor.movePosition(QTextCursor::End);
-    cursor.insertText(text);
+    cursor.insertText(cleanText);
     terminal->setTextCursor(cursor);
     
     // Auto-scroll to bottom
@@ -191,7 +231,12 @@ void VMTerminal::onCommandEntered(const QString &command)
 {
     QProcess *qemuProcess = VMManager::instance().getQemuProcess();
     if (qemuProcess && qemuProcess->state() == QProcess::Running) {
-        qemuProcess->write((command + "\n").toUtf8());
+        // If command ends with \t (tab autocomplete), don't add newline
+        if (command.endsWith("\t")) {
+            qemuProcess->write(command.toUtf8());
+        } else {
+            qemuProcess->write((command + "\n").toUtf8());
+        }
     } else {
         appendOutput("Error: VM is not running\n");
     }
