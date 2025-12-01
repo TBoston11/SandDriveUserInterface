@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QTextEdit>
 #include <QKeyEvent>
+#include <QTimer>
+#include <QTimer>
 
 namespace Ui {
 class VMTerminal;
@@ -48,12 +50,15 @@ signals:
     void stopVMRequested();
 
 private slots:
-    void onStopVM();
+    void onToggleVM();
     void onCommandEntered(const QString &command);
+    void updateButtonState();
 
 private:
     Ui::VMTerminal *ui;
     InteractiveTerminal *terminal;
+    QTimer stateTimer;
+    QString lastCommand;  // Track last sent command to filter echo
 };
 
 #endif // VMTERMINAL_H

@@ -1,5 +1,6 @@
 #include <QVBoxLayout>
 #include <QStackedWidget>
+#include <QLabel>
 #include "screens/UserSelectScreen.h"
 #include "screens/LoginScreen.h"
 #include "screens/MainDashboard.h"
@@ -7,6 +8,7 @@
 #include "screens/DeleteUserScreen.h"
 #include "core/DatabaseManager.h"
 #include "core/VMManager.h"
+#include "core/BatteryMonitor.h"
 #include "ScreenController.h"
 
 ScreenController::ScreenController(QWidget *parent)
@@ -38,6 +40,34 @@ ScreenController::ScreenController(QWidget *parent)
     stack->addWidget(scanScreen);           // index 9
     stack->addWidget(vmTerminalScreen);     // index 10
     stack->setCurrentWidget(userSelectScreen);
+
+    // Create battery monitor and label
+    batteryMonitor = new BatteryMonitor(this);
+    batteryLabel = new QLabel(this);
+    batteryLabel->setStyleSheet(R"(
+        QLabel {
+            color: #f5f5f7;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14pt;
+            font-weight: 500;
+        }
+    )");
+    batteryLabel->setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
+    
+    // Position battery label in top-left corner
+    batteryLabel->setParent(this);
+    batteryLabel->raise(); // Ensure it's on top
+    batteryLabel->move(10, 10); // 10px from left edge
+    batteryLabel->setFixedSize(130, 40);
+    
+    // Connect battery updates
+    connect(batteryMonitor, &BatteryMonitor::batteryPercentageChanged, 
+            this, &ScreenController::updateBatteryDisplay);
+    
+    // Set initial battery display
+    updateBatteryDisplay(batteryMonitor->getBatteryPercentage());
 
     auto layout = new QVBoxLayout(this);
     layout->setContentsMargins(0, 0, 0, 0);
@@ -211,4 +241,43 @@ void ScreenController::showReportViewer(const QString &filepath)
 {
     reportViewerScreen->loadReportFile(filepath);
     stack->setCurrentWidget(reportViewerScreen);
+}
+
+void ScreenController::updateBatteryDisplay(int percentage)
+{
+    QString batteryText = QString("🔋 %1%").arg(percentage);
+    batteryLabel->setText(batteryText);
+    
+    // Update color based on percentage
+    QString color;
+    if (percentage >= 75) {
+        color = "#4ade80"; // Green
+    } else if (percentage >= 50) {
+        color = "#facc15"; // Yellow
+    } else if (percentage >= 25) {
+        color = "#fb923c"; // Orange
+    } else {
+        color = "#f87171"; // Red
+    }
+    
+    batteryLabel->setStyleSheet(QString(R"(
+        QLabel {
+            color: %1;
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 8px 16px;
+            font-size: 14pt;
+            font-weight: 500;
+        }
+    )").arg(color));
+}
+
+void ScreenController::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+    
+    // Reposition battery label in top-left corner
+    if (batteryLabel) {
+        batteryLabel->move(10, 10);
+    }
 }

@@ -87,12 +87,10 @@ void InteractiveTerminal::executeCommand()
         emit commandEntered(command);
     }
     
-    // Move to end and add newline
+    // Don't display newline here - let the remote output handle it
+    // Update prompt position to end
     cursor.movePosition(QTextCursor::End);
-    cursor.insertText("\n");
     setTextCursor(cursor);
-    
-    // Update prompt position
     promptPosition = cursor.position();
 }
 
@@ -151,7 +149,7 @@ VMTerminal::VMTerminal(QWidget *parent)
     
     // Connect buttons
     connect(ui->backButton, &QPushButton::clicked, this, &VMTerminal::backRequested);
-    connect(ui->stopVMButton, &QPushButton::clicked, this, &VMTerminal::onStopVM);
+    connect(ui->stopVMButton, &QPushButton::clicked, this, &VMTerminal::onToggleVM);
     
     // Connect terminal command signal
     connect(terminal, &InteractiveTerminal::commandEntered, this, &VMTerminal::onCommandEntered);
@@ -162,18 +160,27 @@ VMTerminal::VMTerminal(QWidget *parent)
     
     connect(&VMManager::instance(), &VMManager::vmStarted, this, [this]() {
         appendOutput("\n=== VM Started ===\n");
-        appendOutput("SSH: ssh -p 2222 kali@localhost\n");
-        appendOutput("Default credentials: kali/kali\n\n");
+        appendOutput("SSH auto-login enabled (debian/debian).\n\n");
+        updateButtonState();
     });
     
     connect(&VMManager::instance(), &VMManager::vmStopped, this, [this]() {
         appendOutput("\n=== VM Stopped ===\n");
+        updateButtonState();
     });
     
     connect(&VMManager::instance(), &VMManager::vmError, this, [this](const QString &error) {
         appendOutput("\n=== ERROR ===\n");
         appendOutput(error + "\n");
     });
+
+    // Set initial button state based on VM status
+    updateButtonState();
+
+    // Periodically refresh button state to stay in sync
+    stateTimer.setInterval(2000);
+    connect(&stateTimer, &QTimer::timeout, this, &VMTerminal::updateButtonState);
+    stateTimer.start();
 }
 
 VMTerminal::~VMTerminal()
@@ -183,31 +190,35 @@ VMTerminal::~VMTerminal()
 
 void VMTerminal::appendOutput(const QString &text)
 {
-    // Strip ANSI escape codes more comprehensively
+    // Strip ANSI escape codes safely using a robust regex
     QString cleanText = text;
-    
-    // Remove all ESC sequences: ESC followed by [ and parameters
-    cleanText.remove(QRegularExpression("\x1B\\[[^m]*m")); // Color codes
-    cleanText.remove(QRegularExpression("\x1B\\[[0-9;?]*[A-Za-z]")); // Cursor movement, modes
-    cleanText.remove(QRegularExpression("\x1B\\][^\x07]*\x07")); // Operating system commands
-    cleanText.remove(QRegularExpression("\x1B[=>]")); // Keypad modes
-    cleanText.remove(QRegularExpression("\x1B\\([B0]")); // Character sets
-    cleanText.remove(QRegularExpression("\x1B.")); // Any other ESC sequences
-    
-    // Remove specific problematic sequences
-    cleanText.remove(QRegularExpression("\\[\\?2004[hl]")); // Bracketed paste mode
-    cleanText.remove(QRegularExpression("\\[\\?[0-9]+[hl]")); // Private mode sequences
-    cleanText.remove(QRegularExpression("\\[[0-9]+;[0-9]+H")); // Cursor position
-    cleanText.remove(QRegularExpression("\\[K")); // Erase line
-    cleanText.remove(QRegularExpression("\\[J")); // Erase display
-    cleanText.remove(QRegularExpression("\\[6n")); // Cursor position report
-    
+
+    // General ANSI escape sequence pattern: ESC [ ... final byte in @-~
+    QRegularExpression ansiPattern("\x1B\\[[0-9;?]*[ -/]*[@-~]");
+    if (ansiPattern.isValid()) {
+        cleanText.remove(ansiPattern);
+    }
+
+    // Operating System Command (OSC): ESC ] ... BEL
+    QRegularExpression oscPattern("\x1B\\][^\x07]*\x07");
+    if (oscPattern.isValid()) {
+        cleanText.remove(oscPattern);
+    }
+
     // Remove Bell character
     cleanText.remove(QChar('\x07'));
+
+    // Remove other control chars except tab(\t), newline(\n), carriage return(\r)
+    QRegularExpression ctrlChars("[\x00-\x06\x0B\x0C\x0E-\x1F]");
+    if (ctrlChars.isValid()) {
+        cleanText.remove(ctrlChars);
+    }
     
-    // Remove control characters except tab, newline, carriage return
-    // This includes backspace (\x08) which causes display issues
-    cleanText.remove(QRegularExpression("[\x00-\x06\x0B\x0C\x0E-\x1F]"));
+    // Filter out command echo if it matches last sent command
+    if (!lastCommand.isEmpty() && cleanText.contains(lastCommand)) {
+        cleanText.replace(lastCommand, "");
+        lastCommand.clear();  // Only filter once
+    }
     
     QTextCursor cursor = terminal->textCursor();
     cursor.movePosition(QTextCursor::End);
@@ -229,21 +240,55 @@ void VMTerminal::clear()
 
 void VMTerminal::onCommandEntered(const QString &command)
 {
-    QProcess *qemuProcess = VMManager::instance().getQemuProcess();
-    if (qemuProcess && qemuProcess->state() == QProcess::Running) {
+    QProcess *virshProcess = VMManager::instance().getVirshProcess();
+    if (virshProcess && virshProcess->state() == QProcess::Running) {
+        // Track command to filter echo
+        lastCommand = command;
+        
         // If command ends with \t (tab autocomplete), don't add newline
         if (command.endsWith("\t")) {
-            qemuProcess->write(command.toUtf8());
+            virshProcess->write(command.toUtf8());
         } else {
-            qemuProcess->write((command + "\n").toUtf8());
+            virshProcess->write((command + "\n").toUtf8());
         }
     } else {
-        appendOutput("Error: VM is not running\n");
+        appendOutput("Error: VM console is not connected\n");
     }
 }
 
-void VMTerminal::onStopVM()
+void VMTerminal::onToggleVM()
 {
-    VMManager::instance().stopVM();
-    emit stopVMRequested();
+    ui->stopVMButton->setEnabled(false);
+    bool running = VMManager::instance().isVMRunning();
+    if (running) {
+        VMManager::instance().stopVM();
+        emit stopVMRequested();
+    } else {
+        VMManager::instance().startVM();
+    }
+}
+
+void VMTerminal::updateButtonState()
+{
+    bool running = VMManager::instance().isVMRunning();
+    ui->stopVMButton->setText(running ? "Stop VM" : "Start VM");
+    
+    // Update button color based on state
+    if (running) {
+        // Red for Stop VM
+        ui->stopVMButton->setStyleSheet(
+            "QPushButton { background-color: #8B0000; color: white; }"
+            "QPushButton:hover { background-color: #A52A2A; }"
+            "QPushButton:pressed { background-color: #600000; }"
+        );
+    } else {
+        // Green for Start VM
+        ui->stopVMButton->setStyleSheet(
+            "QPushButton { background-color: #006400; color: white; }"
+            "QPushButton:hover { background-color: #008000; }"
+            "QPushButton:pressed { background-color: #004000; }"
+        );
+    }
+    
+    ui->stopVMButton->setEnabled(true);
 }

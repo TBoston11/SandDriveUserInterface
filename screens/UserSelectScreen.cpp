@@ -1,5 +1,5 @@
 #include "UserSelectScreen.h"
-#include "ui_userselectscreen.h"
+#include "ui_UserSelectScreen.h"
 #include <QListWidgetItem>
 #include <QPushButton>
 #include <QVBoxLayout>

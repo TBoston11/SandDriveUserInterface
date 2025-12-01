@@ -3,6 +3,7 @@
 
 #include <QWidget>
 #include <QStackedWidget>
+#include <QLabel>
 #include "screens/UserSelectScreen.h"
 #include "screens/LoginScreen.h"
 #include "screens/MainDashboard.h"
@@ -14,6 +15,8 @@
 #include "screens/ReportViewer.h"
 #include "screens/ScanScreen.h"
 #include "screens/VMTerminal.h"
+#include "core/BatteryMonitor.h"
+#include "core/USBMonitor.h"
 
 class ScreenController : public QWidget
 {
@@ -21,6 +24,9 @@ class ScreenController : public QWidget
 
 public:
     explicit ScreenController(QWidget *parent = nullptr);
+
+protected:
+    void resizeEvent(QResizeEvent *event) override;
 
 private:
     QStackedWidget *stack;
@@ -35,11 +41,19 @@ private:
     ReportViewer *reportViewerScreen;
     ScanScreen *scanScreen;
     VMTerminal *vmTerminalScreen;
+    
+    // Battery indicator
+    QLabel *batteryLabel;
+    BatteryMonitor *batteryMonitor;
+    
+    // USB monitor for auto-passthrough
+    USBMonitor *usbMonitor;
 
     void setupConnections();
     void setupMainDashboard(const QString &username);
     void showLogViewer(const QString &filepath);
     void showReportViewer(const QString &filepath);
+    void updateBatteryDisplay(int percentage);
 };
 
 #endif // SCREENCONTROLLER_H

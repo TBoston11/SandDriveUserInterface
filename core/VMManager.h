@@ -21,8 +21,12 @@ public:
     QString getBaseImagePath() const;
     bool baseImageExists() const;
     
-    // Get QEMU process for output/input
-    QProcess* getQemuProcess() const { return qemuProcess; }
+    // USB device passthrough
+    bool attachUSBDevice(const QString &vendorId, const QString &productId);
+    bool detachUSBDevice(const QString &vendorId, const QString &productId);
+    
+    // Get virsh console process for output/input
+    QProcess* getVirshProcess() const { return virshProcess; }
 
 signals:
     void vmStarted();
@@ -36,12 +40,12 @@ private:
     VMManager(const VMManager&) = delete;
     VMManager& operator=(const VMManager&) = delete;
 
-    QProcess *qemuProcess;
-    QString baseImagePath;
-    QString userOverlayPath;
+    QProcess *virshProcess;
+    QString vmName;
     
     void setupPaths();
     QString createUserOverlay();
+    void startConsole();
 };
 
 #endif // VMMANAGER_H
