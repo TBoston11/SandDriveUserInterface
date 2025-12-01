@@ -9,6 +9,7 @@
 #include "core/DatabaseManager.h"
 #include "core/VMManager.h"
 #include "core/BatteryMonitor.h"
+#include "core/USBMonitor.h"
 #include "ScreenController.h"
 
 ScreenController::ScreenController(QWidget *parent)
@@ -112,6 +113,27 @@ ScreenController::ScreenController(QWidget *parent)
     connect(vmTerminalScreen, &VMTerminal::backRequested, this, [this]() {
         stack->setCurrentWidget(scanScreen);
     });
+    
+    // Setup USB monitoring for auto-passthrough to VM
+    usbMonitor = new USBMonitor(this);
+    connect(usbMonitor, &USBMonitor::usbDeviceInserted, this, [](const USBDevice &device) {
+        qDebug() << "USB inserted:" << device.description;
+        // Auto-attach to VM if running
+        if (VMManager::instance().isVMRunning()) {
+            VMManager::instance().attachUSBDevice(device.vendorId, device.productId);
+        }
+    });
+    
+    connect(usbMonitor, &USBMonitor::usbDeviceRemoved, this, [](const USBDevice &device) {
+        qDebug() << "USB removed:" << device.identifier();
+        // Auto-detach from VM
+        if (VMManager::instance().isVMRunning()) {
+            VMManager::instance().detachUSBDevice(device.vendorId, device.productId);
+        }
+    });
+    
+    // Start monitoring USB devices
+    usbMonitor->startMonitoring();
 }
 
 void ScreenController::setupMainDashboard(const QString &username)
